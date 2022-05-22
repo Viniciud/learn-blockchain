@@ -1,5 +1,5 @@
 import { BlockModel, PayloadModel } from '../models/blockchain.model'
-import { hash, hashValidated } from '../utils/helpers.util'
+import { hash, checkedHash } from '../utils/helpers.util'
 
 export class Blockchain {
   #chain: BlockModel[] = []
@@ -58,7 +58,7 @@ export class Blockchain {
       const blockHash: string = hash(JSON.stringify(block))
       const hashPow: string = hash(blockHash + nonce)
       if (
-        hashValidated({
+        checkedHash({
           hash: hashPow,
           difficulty: this.difficulty,
           prefix: this.powPrefix
@@ -97,7 +97,7 @@ export class Blockchain {
 
     const hashTest: string = hash(hash(JSON.stringify(block.payload)) + block.header.nonce)
 
-    if (!hashValidated({ hash: hashTest, difficulty: this.difficulty, prefix: this.powPrefix })) {
+    if (!checkedHash({ hash: hashTest, difficulty: this.difficulty, prefix: this.powPrefix })) {
       console.error(
         `Block #${block.payload.sequency} it's invalid! Nonce ${block.header.nonce} it's invalid and can't be checked!`
       )
